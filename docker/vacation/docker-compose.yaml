@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+    drupal:
+      image: 'off_on_vacation_drupal:8.3.2-apache'
+      build: ../custom_images/travel_drupal
+      restart: always
+      depends_on:
+        - postgres
+      ports:
+        - 80:80
+        - 443:443
+      volumes:
+        - "drupal_themes:/var/www/html/themes"
+        - "drupal_modules:/var/www/html/modules"
+        - "drupal_profiles:/var/www/html/profiles"
+        - "drupal_sites:/var/www/html/sites"
+      logging:
+        driver: json-file
+        options:
+          max-size: "200k"
+          max-file: "10"
+      networks:
+        - travel
+    postgres:
+      image: 'postgres:9.6.3-alpine'
+      restart: always
+      environment:
+        POSTGRES_USER: "${PG_USER}"
+        POSTGRES_PASSWORD: "${PG_PASSWORD}"
+        POSTGRES_DB: "${DRUPAL_DB_NAME}"
+        POSTGRES_INITDB_XLOGDIR: "${PG_LOG_DIR}"
+      expose:
+        - "5432"
+      volumes:
+        - "pg_data:/var/lib/postgresql/data"
+        - "pg_logs:${PG_LOG_DIR}"
+      logging:
+        driver: json-file
+        options:
+          max-size: "200k"
+          max-file: "10"
+      networks:
+        - travel
+volumes:
+  pg_data:
+    driver: local
+  pg_logs:
+    driver: local
+  drupal_themes:
+    driver: local
+  drupal_modules:
+    driver: local
+  drupal_profiles:
+    driver: local
+  drupal_sites:
+    driver: local
+networks:
+  travel:
+    driver: bridge
