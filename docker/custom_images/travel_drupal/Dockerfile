@@ -6,7 +6,7 @@ LABEL php_version="7.1"
 LABEL description="version for Drupal 8 with uploadprogress PHP module"
 LABEL vendor="Georgia Institute of Technology"
 
-ENV APT_REQS git
+ENV APT_REQS git wget
 ENV REPO https://github.com/Jan-E/uploadprogress
 ENV REPO_DIR uploadprogress
 ENV LISTS /var/lib/apt/lists/*
@@ -32,3 +32,6 @@ RUN rm -rf /builds \
     && apt-get remove --purge -y git \
     && apt-get autoremove -y \
     && rm -rf $LISTS
+
+COPY docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
+RUN chmod +x /usr/local/bin/docker-php-entrypoint
