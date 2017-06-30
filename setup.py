@@ -8,7 +8,7 @@ TEMPLATE_URL = ENV_FILE_URL + '.template'
 FIELDS = {
     'PG_USER': {
         'description': 'PostGres User',
-        # 'default': 'pg_admin'
+        # 'default': 'db_admin'
     },
     'PG_PASSWORD': {
         'description': 'PostGres User\'s Password',
