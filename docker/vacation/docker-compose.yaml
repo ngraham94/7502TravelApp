@@ -3,7 +3,11 @@ version: '3'
 services:
     drupal:
       image: 'off_on_vacation_drupal:8.3.5-apache'
-      build: ../custom_images/travel_drupal
+      build:
+        context: ../custom_images/travel_drupal
+        args:
+          WWW_UID=${DRUPAL_UID}
+          WWW_GID=${DRUPAL_GID}
       restart: always
       depends_on:
         - postgres

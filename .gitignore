@@ -1,8 +1,7 @@
 .env
-sites/*/settings*.php
-sites/*/services*.yml
-sites/*/files/*
-sites/*/private/*
+sites
 !**/*.jpg
 !**/*.jpeg
 !**/*.png
+
+\.vscode/
