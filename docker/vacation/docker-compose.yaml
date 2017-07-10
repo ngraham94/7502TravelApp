@@ -22,7 +22,8 @@ services:
       networks:
         - travel
     postgres:
-      image: 'postgres:9.6.3-alpine'
+      image: 'traveldb:9-alpine'
+      build: ../custom_images/travel_db
       restart: always
       environment:
         POSTGRES_USER: "${PG_USER}"
