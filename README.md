@@ -8,8 +8,9 @@ This has been written as part of Georgia Tech's CS Junior Design class,
 part 2.
 
 <!-- TOC -->
-## Table of Contents
+
 - [7502TravelApp](#7502travelapp)
+    - [Table of Contents](#table-of-contents)
     - [Setup Testing Environment](#setup-testing-environment)
         - [Getting the Right Tools](#getting-the-right-tools)
         - [Double Check your install](#double-check-your-install)
@@ -20,6 +21,15 @@ part 2.
 <!-- /TOC -->
 
 ## Setup Testing Environment
+
+**Note: This repository depends on external, 3rd party git repositories.
+  You must clone this repository recursively!**
+
+Run the following command to clone this repository recursively:
+
+```
+    git clone --recursive https://github.com/ngraham94/7502TravelApp.git
+```
 
 If you want an environment to play around with and get to know this CMS better,
 then you must complete the steps listed below:
@@ -42,15 +52,15 @@ Versions Required:
 
 * [Windows](https://docs.docker.com/docker-for-windows/install/)
 * [MacOS](https://docs.docker.com/docker-for-mac/install/)
-* (For Windows and MacOS) Having trouble installing it? 
+* (For Windows and MacOS) Having trouble installing it?
   Use [Docker Toolbox](https://www.docker.com/products/docker-toolbox)
   instead.
 * [Linux (Ubuntu)](https://docs.docker.com/engine/installation/linux/ubuntu/)
-  * Note: Does not come with Docker Compose. 
+  * Note: Does not come with Docker Compose.
     [Install from here.](https://docs.docker.com/compose/install/)
 
-**Note: On Linux (and maybe MacOS) systems, sometimes it's necessary to add your user to the `docker` group. 
-Do so with the command** 
+**Note: On Linux (and maybe MacOS) systems, sometimes it's necessary to add your user to the `docker` group.
+Do so with the command**
 
 `# usermod -a -G docker $(whoami)`
 
@@ -70,20 +80,20 @@ was not tested on Python 3).
 
 ### Setting up the Repository Files
 
-1. Clone this repository. 
+1. Clone this repository.
    The directory this project will be downloaded to will be referred to
    as the Git Root.
 2. Git-Checkout the `dockerize` branch
-3. Create a Data directory to host persistent files in any directory except 
+3. Create a Data directory to host persistent files in any directory except
    the project's Git Root.
    1. Three empty subdirectories have to be made within this directory:
       `profiles`, `themes`, `modules`.
    2. Extract the contents of `default_sites.tar.gz` into the data directory.
       This should give you a fourth subdirectory called `sites`.
-4. Setup environment variables. There are two ways of doing this. 
+4. Setup environment variables. There are two ways of doing this.
    You can do this manually, or with the assistance of the setup script.
    Detailed instructions on doing this will be listed below
-5. In your Docker Command Line Interface, to the Docker service directory 
+5. In your Docker Command Line Interface, to the Docker service directory
    (found in ${GIT ROOT}/docker/vacation)
 6. Run `docker-compose up --build`
 7. In your web browser, navigate to `localhost:80` and follow the prompts
