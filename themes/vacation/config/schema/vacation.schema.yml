@@ -1,0 +1,5 @@
+# Schema for the theme setting configuration file of the THEMETITLE theme.
+
+vacation.settings:
+  type: theme_settings
+  label: 'Off On Vacation settings'
