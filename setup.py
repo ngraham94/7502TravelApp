@@ -8,11 +8,9 @@ TEMPLATE_URL = ENV_FILE_URL + '.template'
 FIELDS = {
     'PG_USER': {
         'description': 'PostGres User',
-        # 'default': 'db_admin'
     },
     'PG_PASSWORD': {
         'description': 'PostGres User\'s Password',
-        # 'default': ''
     },
     'DRUPAL_DB_NAME': {
         'description': 'Database Name',
@@ -20,31 +18,31 @@ FIELDS = {
     },
     'DIR_STORAGE': {
         'description': 'Persistent Storage Directory URL',
-        # 'default': '',
         'fscheck': True,
         'subdir': False
     },
     'DIR_MODULES': {
         'description': 'Persistent Storage Directory URL',
-        # 'default': 'modules',
         'fscheck': True,
         'subdir': True
     },
     'DIR_PROFILES': {
         'description': 'Persistent Storage Directory URL',
-        # 'default': 'profiles',
         'fscheck': True,
         'subdir': True
     },
     'DIR_SITES': {
         'description': 'Persistent Storage Directory URL',
-        # 'default': 'sites',
         'fscheck': True,
         'subdir': True
     },
     'DIR_THEMES': {
         'description': 'Persistent Storage Directory URL',
-        # 'default': 'themes',
+        'fscheck': True,
+        'subdir': True
+    },
+    'DIR_LIBRARIES': {
+        'description': 'Persistent Storage Directory URL',
         'fscheck': True,
         'subdir': True
     }
