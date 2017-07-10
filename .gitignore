@@ -1,9 +1,8 @@
 .env
 sites/*/settings*.php
 sites/*/services*.yml
-sites/*/files
-sites/*/private
-sites/simpletest
-!*.jpg
-!*.jpeg
-!*.png
+sites/*/files/*
+sites/*/private/*
+!**/*.jpg
+!**/*.jpeg
+!**/*.png
