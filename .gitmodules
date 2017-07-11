@@ -1,0 +1,12 @@
+[submodule "libraries/blazy"]
+	path = libraries/blazy
+	url = https://github.com/dinbror/blazy
+[submodule "libraries/easing"]
+	path = libraries/easing
+	url = https://github.com/gdsmith/jquery.easing.git
+[submodule "libraries/slick"]
+	path = libraries/slick
+	url = https://github.com/kenwheeler/slick.git
+[submodule "themes/vacation/bootstrap"]
+	path = themes/vacation/bootstrap
+	url = https://github.com/twbs/bootstrap-sass.git
