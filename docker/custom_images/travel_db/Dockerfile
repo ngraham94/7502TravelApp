@@ -7,5 +7,7 @@ LABEL vendor="Georgia Institute of Technology"
 
 RUN mkdir /schemas
 COPY schemas/drupal.sql /schemas/drupal.sql
-COPY start.sh /docker-entrypoint-initdb.d/start.sh
-RUN chmod +x /schemas/drupal.sql /docker-entrypoint-initdb.d/start.sh
+COPY schemas/portal.sql /schemas/portal.sql
+COPY schemas/portaluser.sql /schemas/portaluser.sql
+COPY _start.sh /docker-entrypoint-initdb.d/_start.sh
+RUN chmod +x /schemas/* /docker-entrypoint-initdb.d/_start.sh
