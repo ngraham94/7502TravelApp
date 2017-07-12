@@ -26,6 +26,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 -- extensions
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
@@ -262,39 +263,55 @@ CREATE TABLE "client_notes" (
 
 -- created separate for better debugging, each constraint is named
 
-ALTER TABLE "phone_numbers" ADD CONSTRAINT "phone_numbers_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "phone_numbers" ADD CONSTRAINT "phone_numbers_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
 
-ALTER TABLE "addresses" ADD CONSTRAINT "addresses_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "addresses" ADD CONSTRAINT "addresses_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
 
-ALTER TABLE "cards" ADD CONSTRAINT "cards_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "cards" ADD CONSTRAINT "cards_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
 
-ALTER TABLE "trips" ADD CONSTRAINT "trips_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "trips" ADD CONSTRAINT "trips_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
 
-ALTER TABLE "destinations" ADD CONSTRAINT "destinations_fk0" FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+ALTER TABLE "destinations" ADD CONSTRAINT "destinations_fk0"
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
 
-ALTER TABLE "travellers" ADD CONSTRAINT "travellers_fk0" FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+ALTER TABLE "travellers" ADD CONSTRAINT "travellers_fk0"
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
 
-ALTER TABLE "client_event_log" ADD CONSTRAINT "client_event_log_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "client_event_log" ADD CONSTRAINT "client_event_log_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
 
-ALTER TABLE "surveys" ADD CONSTRAINT "surveys_fk0" FOREIGN KEY ("survey_type_id") REFERENCES "survey_types"("survey_type_id");
-ALTER TABLE "surveys" ADD CONSTRAINT "surveys_fk1" FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+ALTER TABLE "surveys" ADD CONSTRAINT "surveys_fk0"
+    FOREIGN KEY ("survey_type_id") REFERENCES "survey_types"("survey_type_id");
 
-ALTER TABLE "travel_preferences" ADD CONSTRAINT "travel_preferences_fk0" FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+ALTER TABLE "surveys" ADD CONSTRAINT "surveys_fk1"
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+
+ALTER TABLE "travel_preferences" ADD CONSTRAINT "travel_preferences_fk0"
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
 
 
-ALTER TABLE "survey_fields" ADD CONSTRAINT "survey_fields_fk0" FOREIGN KEY ("survey_type_id") REFERENCES "survey_types"("survey_type_id");
+ALTER TABLE "survey_fields" ADD CONSTRAINT "survey_fields_fk0"
+    FOREIGN KEY ("survey_type_id") REFERENCES "survey_types"("survey_type_id");
 
-ALTER TABLE "survey_results" ADD CONSTRAINT "survey_results_fk0" FOREIGN KEY ("survey_uuid") REFERENCES "surveys"("survey_uuid");
-ALTER TABLE "survey_results" ADD CONSTRAINT "survey_results_fk1" FOREIGN KEY ("survey_field_key") REFERENCES "survey_fields"("survey_field_key");
+ALTER TABLE "survey_results" ADD CONSTRAINT "survey_results_fk0"
+    FOREIGN KEY ("survey_uuid") REFERENCES "surveys"("survey_uuid");
 
-ALTER TABLE "trip_notes" ADD CONSTRAINT "trip_notes_fk0" FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+ALTER TABLE "survey_results" ADD CONSTRAINT "survey_results_fk1"
+    FOREIGN KEY ("survey_field_key")
+    REFERENCES "survey_fields"("survey_field_key");
 
-ALTER TABLE "client_notes" ADD CONSTRAINT "client_notes_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "trip_notes" ADD CONSTRAINT "trip_notes_fk0"
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+
+ALTER TABLE "client_notes" ADD CONSTRAINT "client_notes_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
 
 -- triggers
 
 CREATE TRIGGER update_trips_time_close_on_status_change
-    AFTER UPDATE
-    ON trips
-    FOR EACH ROW
+    AFTER UPDATE ON trips FOR EACH ROW
     EXECUTE PROCEDURE update_trips_time_close();
