@@ -29,6 +29,30 @@ SET row_security = off;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
+-- functions
+
+CREATE OR REPLACE FUNCTION update_trips_time_close()
+    RETURNS trigger AS
+$$
+BEGIN
+    IF ((OLD.status = 'active' OR OLD.status = 'inactive')
+        AND (NEW.status = 'sale' OR NEW.status = 'dud'))
+    THEN
+        UPDATE trips SET time_close = LOCALTIMESTAMP
+            WHERE trip_uuid = OLD.trip_uuid;
+    ELSIF ((OLD.status = 'sale' OR OLD.status = 'dud')
+            AND (NEW.status = 'active' OR NEW.status = 'inactive'))
+    THEN
+        UPDATE trips SET time_close = NULL
+            WHERE trip_uuid = OLD.trip_uuid;
+    END IF;
+
+    RETURN NEW;
+END;
+$$
+LANGUAGE 'plpgsql' VOLATILE
+SECURITY DEFINER COST 1;
+
 -- declarations
 
 CREATE TYPE trip_status AS ENUM ('dud', 'inactive', 'active', 'sale');
@@ -266,3 +290,11 @@ ALTER TABLE "survey_results" ADD CONSTRAINT "survey_results_fk1" FOREIGN KEY ("s
 ALTER TABLE "trip_notes" ADD CONSTRAINT "trip_notes_fk0" FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
 
 ALTER TABLE "client_notes" ADD CONSTRAINT "client_notes_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+
+-- triggers
+
+CREATE TRIGGER update_trips_time_close_on_status_change
+    AFTER UPDATE
+    ON trips
+    FOR EACH ROW
+    EXECUTE PROCEDURE update_trips_time_close();
