@@ -37,12 +37,13 @@ CREATE TABLE "clients" (
 	"client_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
-	"salt" char(12) NOT NULL UNIQUE,
+	"salt" char(20) NOT NULL UNIQUE,
 	"first_name" TEXT NOT NULL,
 	"last_name" TEXT NOT NULL,
 	"preferred_name" TEXT NOT NULL,
 	"time_creation" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"flag_reset_password" bool NOT NULL DEFAULT TRUE,
+    "flag_deleted" bool NOT NULL DEFAULT FALSE,
 	CONSTRAINT clients_pk PRIMARY KEY ("client_uuid")
 ) WITH (
   OIDS=FALSE
@@ -85,8 +86,9 @@ CREATE TABLE "cards" (
 CREATE TABLE "trips" (
 	"trip_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"client_uuid" UUID NOT NULL,
+    "title" character varying(40) NOT NULL,
 	"assignee" TEXT,
-	"status" trip_status NOT NULL,
+	"status" trip_status NOT NULL DEFAULT 'active',
 	"occasion" character varying(40) NOT NULL,
 	"start_date" DATE NOT NULL DEFAULT CURRENT_DATE,
 	"end_date" DATE NOT NULL DEFAULT CURRENT_DATE,
@@ -96,6 +98,7 @@ CREATE TABLE "trips" (
 	"time_start" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"time_edit" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"time_close" TIMESTAMP,
+    "flag_deleted" bool NOT NULL DEFAULT FALSE,
 	CONSTRAINT trips_pk PRIMARY KEY ("trip_uuid")
 ) WITH (
   OIDS=FALSE
@@ -144,6 +147,7 @@ CREATE TABLE "surveys" (
 	"survey_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"survey_type_id" serial2 NOT NULL,
 	"trip_uuid" UUID NOT NULL,
+    "external_shareable" bool NOT NULL DEFAULT FALSE,
 	"time_completed" TIMESTAMP DEFAULT LOCALTIMESTAMP,
 	"time_edited" TIMESTAMP DEFAULT LOCALTIMESTAMP,
 	CONSTRAINT surveys_pk PRIMARY KEY ("survey_uuid")
