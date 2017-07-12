@@ -2,7 +2,7 @@
 
 -- schemas
 CREATE SCHEMA IF NOT EXISTS backend;
-ALTER ROLE portaluser SET search_path TO backend;
+ALTER ROLE portaluser SET search_path TO backend,public;
 GRANT ALL ON SCHEMA backend TO portaluser;
 GRANT USAGE ON SCHEMA public TO portaluser;
 
@@ -26,23 +26,49 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 -- extensions
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- functions
+
+CREATE OR REPLACE FUNCTION update_trips_time_close()
+    RETURNS trigger AS
+$$
+BEGIN
+    IF ((OLD.status = 'active' OR OLD.status = 'inactive')
+        AND (NEW.status = 'sale' OR NEW.status = 'dud'))
+    THEN
+        UPDATE trips SET time_close = LOCALTIMESTAMP
+            WHERE trip_uuid = OLD.trip_uuid;
+    ELSIF ((OLD.status = 'sale' OR OLD.status = 'dud')
+            AND (NEW.status = 'active' OR NEW.status = 'inactive'))
+    THEN
+        UPDATE trips SET time_close = NULL
+            WHERE trip_uuid = OLD.trip_uuid;
+    END IF;
+
+    RETURN NEW;
+END;
+$$
+LANGUAGE 'plpgsql' VOLATILE
+SECURITY DEFINER COST 1;
 
 -- declarations
 
 CREATE TYPE trip_status AS ENUM ('dud', 'inactive', 'active', 'sale');
 
 CREATE TABLE "clients" (
-	"client_uuid" UUID NOT NULL DEFAULT public.uuid_generate_v4(),
+	"client_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
-	"salt" char(12) NOT NULL UNIQUE,
+	"salt" char(20) NOT NULL UNIQUE,
 	"first_name" TEXT NOT NULL,
 	"last_name" TEXT NOT NULL,
 	"preferred_name" TEXT NOT NULL,
 	"time_creation" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"flag_reset_password" bool NOT NULL DEFAULT TRUE,
+    "flag_deleted" bool NOT NULL DEFAULT FALSE,
 	CONSTRAINT clients_pk PRIMARY KEY ("client_uuid")
 ) WITH (
   OIDS=FALSE
@@ -83,10 +109,11 @@ CREATE TABLE "cards" (
 
 
 CREATE TABLE "trips" (
-	"trip_uuid" UUID NOT NULL DEFAULT public.uuid_generate_v4(),
+	"trip_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"client_uuid" UUID NOT NULL,
+    "title" character varying(40) NOT NULL,
 	"assignee" TEXT,
-	"status" trip_status NOT NULL,
+	"status" trip_status NOT NULL DEFAULT 'active',
 	"occasion" character varying(40) NOT NULL,
 	"start_date" DATE NOT NULL DEFAULT CURRENT_DATE,
 	"end_date" DATE NOT NULL DEFAULT CURRENT_DATE,
@@ -96,6 +123,7 @@ CREATE TABLE "trips" (
 	"time_start" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"time_edit" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"time_close" TIMESTAMP,
+    "flag_deleted" bool NOT NULL DEFAULT FALSE,
 	CONSTRAINT trips_pk PRIMARY KEY ("trip_uuid")
 ) WITH (
   OIDS=FALSE
@@ -141,9 +169,10 @@ CREATE TABLE "client_event_log" (
 
 
 CREATE TABLE "surveys" (
-	"survey_uuid" UUID NOT NULL DEFAULT public.uuid_generate_v4(),
+	"survey_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"survey_type_id" serial2 NOT NULL,
 	"trip_uuid" UUID NOT NULL,
+    "external_shareable" bool NOT NULL DEFAULT FALSE,
 	"time_completed" TIMESTAMP DEFAULT LOCALTIMESTAMP,
 	"time_edited" TIMESTAMP DEFAULT LOCALTIMESTAMP,
 	CONSTRAINT surveys_pk PRIMARY KEY ("survey_uuid")
@@ -234,31 +263,55 @@ CREATE TABLE "client_notes" (
 
 -- created separate for better debugging, each constraint is named
 
-ALTER TABLE "phone_numbers" ADD CONSTRAINT "phone_numbers_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "phone_numbers" ADD CONSTRAINT "phone_numbers_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
 
-ALTER TABLE "addresses" ADD CONSTRAINT "addresses_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "addresses" ADD CONSTRAINT "addresses_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
 
-ALTER TABLE "cards" ADD CONSTRAINT "cards_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "cards" ADD CONSTRAINT "cards_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
 
-ALTER TABLE "trips" ADD CONSTRAINT "trips_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "trips" ADD CONSTRAINT "trips_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
 
-ALTER TABLE "destinations" ADD CONSTRAINT "destinations_fk0" FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+ALTER TABLE "destinations" ADD CONSTRAINT "destinations_fk0"
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
 
-ALTER TABLE "travellers" ADD CONSTRAINT "travellers_fk0" FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+ALTER TABLE "travellers" ADD CONSTRAINT "travellers_fk0"
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
 
-ALTER TABLE "client_event_log" ADD CONSTRAINT "client_event_log_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "client_event_log" ADD CONSTRAINT "client_event_log_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
 
-ALTER TABLE "surveys" ADD CONSTRAINT "surveys_fk0" FOREIGN KEY ("survey_type_id") REFERENCES "survey_types"("survey_type_id");
-ALTER TABLE "surveys" ADD CONSTRAINT "surveys_fk1" FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+ALTER TABLE "surveys" ADD CONSTRAINT "surveys_fk0"
+    FOREIGN KEY ("survey_type_id") REFERENCES "survey_types"("survey_type_id");
 
-ALTER TABLE "travel_preferences" ADD CONSTRAINT "travel_preferences_fk0" FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+ALTER TABLE "surveys" ADD CONSTRAINT "surveys_fk1"
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+
+ALTER TABLE "travel_preferences" ADD CONSTRAINT "travel_preferences_fk0"
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
 
 
-ALTER TABLE "survey_fields" ADD CONSTRAINT "survey_fields_fk0" FOREIGN KEY ("survey_type_id") REFERENCES "survey_types"("survey_type_id");
+ALTER TABLE "survey_fields" ADD CONSTRAINT "survey_fields_fk0"
+    FOREIGN KEY ("survey_type_id") REFERENCES "survey_types"("survey_type_id");
 
-ALTER TABLE "survey_results" ADD CONSTRAINT "survey_results_fk0" FOREIGN KEY ("survey_uuid") REFERENCES "surveys"("survey_uuid");
-ALTER TABLE "survey_results" ADD CONSTRAINT "survey_results_fk1" FOREIGN KEY ("survey_field_key") REFERENCES "survey_fields"("survey_field_key");
+ALTER TABLE "survey_results" ADD CONSTRAINT "survey_results_fk0"
+    FOREIGN KEY ("survey_uuid") REFERENCES "surveys"("survey_uuid");
 
-ALTER TABLE "trip_notes" ADD CONSTRAINT "trip_notes_fk0" FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+ALTER TABLE "survey_results" ADD CONSTRAINT "survey_results_fk1"
+    FOREIGN KEY ("survey_field_key")
+    REFERENCES "survey_fields"("survey_field_key");
 
-ALTER TABLE "client_notes" ADD CONSTRAINT "client_notes_fk0" FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+ALTER TABLE "trip_notes" ADD CONSTRAINT "trip_notes_fk0"
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+
+ALTER TABLE "client_notes" ADD CONSTRAINT "client_notes_fk0"
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+
+-- triggers
+
+CREATE TRIGGER update_trips_time_close_on_status_change
+    AFTER UPDATE ON trips FOR EACH ROW
+    EXECUTE PROCEDURE update_trips_time_close();
