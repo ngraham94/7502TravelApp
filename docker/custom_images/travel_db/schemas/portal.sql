@@ -2,7 +2,7 @@
 
 -- schemas
 CREATE SCHEMA IF NOT EXISTS backend;
-ALTER ROLE portaluser SET search_path TO backend;
+ALTER ROLE portaluser SET search_path TO backend,public;
 GRANT ALL ON SCHEMA backend TO portaluser;
 GRANT USAGE ON SCHEMA public TO portaluser;
 
@@ -34,7 +34,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TYPE trip_status AS ENUM ('dud', 'inactive', 'active', 'sale');
 
 CREATE TABLE "clients" (
-	"client_uuid" UUID NOT NULL DEFAULT public.uuid_generate_v4(),
+	"client_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
 	"salt" char(12) NOT NULL UNIQUE,
@@ -83,7 +83,7 @@ CREATE TABLE "cards" (
 
 
 CREATE TABLE "trips" (
-	"trip_uuid" UUID NOT NULL DEFAULT public.uuid_generate_v4(),
+	"trip_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"client_uuid" UUID NOT NULL,
 	"assignee" TEXT,
 	"status" trip_status NOT NULL,
@@ -141,7 +141,7 @@ CREATE TABLE "client_event_log" (
 
 
 CREATE TABLE "surveys" (
-	"survey_uuid" UUID NOT NULL DEFAULT public.uuid_generate_v4(),
+	"survey_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"survey_type_id" serial2 NOT NULL,
 	"trip_uuid" UUID NOT NULL,
 	"time_completed" TIMESTAMP DEFAULT LOCALTIMESTAMP,
