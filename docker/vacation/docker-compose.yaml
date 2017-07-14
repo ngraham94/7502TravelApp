@@ -66,10 +66,27 @@ services:
           max-file: "10"
       networks:
         - travel
+    redis:
+      image: 'redis:3'
+      restart: always
+      expose:
+        - "6379"
+      volumes:
+        - "../conf/redis.conf:/usr/local/etc/redis/redis.conf"
+        - "redis_data:/data"
+      logging:
+        driver: json-file
+        options:
+          max-size: "200k"
+          max-file: "10"
+      networks:
+        - travel
 volumes:
   pg_data:
     driver: local
   pg_logs:
+    driver: local
+  redis_data:
     driver: local
   dot_caddy:
     driver: local
