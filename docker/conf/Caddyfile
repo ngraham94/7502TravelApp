@@ -1,0 +1,10 @@
+{$SITE} {
+    tls webmaster@andrewray.net
+    proxy / http://drupal:80 {
+        transparent
+        except .well-known
+    }
+    root /srv
+    log stdout
+    errors stderr
+}

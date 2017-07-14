@@ -9,6 +9,12 @@ ENV_FILE_URL = DOCKER_DIR + '/.env'
 TEMPLATE_URL = ENV_FILE_URL + '.template'
 
 FIELDS = {
+    'SITE': {
+        'description': """
+            Domain Name of hosted site. To stop HTTPS,
+            you must explicitly declare protocol and port
+            in the URL. i.e.: http://site.com:80"""
+    },
     'PG_USER': {
         'description': 'PostGres User',
     },

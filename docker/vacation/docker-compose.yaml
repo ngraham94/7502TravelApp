@@ -11,13 +11,33 @@ services:
       restart: always
       depends_on:
         - postgres
-      ports:
-        - 80:80
+      expose:
+        - "80"
       volumes:
         - "${DIR_STORAGE}/${DIR_THEMES}:/var/www/html/themes"
         - "${DIR_STORAGE}/${DIR_PROFILES}:/var/www/html/profiles"
         - "${DIR_STORAGE}/${DIR_SITES}:/var/www/html/sites"
         - "${DIR_STORAGE}/${DIR_LIBRARIES}:/var/www/html/libraries"
+      logging:
+        driver: json-file
+        options:
+          max-size: "200k"
+          max-file: "10"
+      networks:
+        - travel
+    rp:
+      image: 'abiosoft/caddy:0.10.4'
+      restart: always
+      depends_on:
+        - drupal
+      ports:
+        - 80:80
+        - 443:443
+      environment:
+        SITE: "${SITE}"
+      volumes:
+        - "../conf/Caddyfile:/etc/Caddyfile:ro"
+        - "dot_caddy:/root/.caddy"
       logging:
         driver: json-file
         options:
@@ -50,6 +70,8 @@ volumes:
   pg_data:
     driver: local
   pg_logs:
+    driver: local
+  dot_caddy:
     driver: local
 networks:
   travel:
