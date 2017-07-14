@@ -18,6 +18,7 @@ services:
         - "${DIR_STORAGE}/${DIR_PROFILES}:/var/www/html/profiles"
         - "${DIR_STORAGE}/${DIR_SITES}:/var/www/html/sites"
         - "${DIR_STORAGE}/${DIR_LIBRARIES}:/var/www/html/libraries"
+        - "locks:/locks:ro"
       logging:
         driver: json-file
         options:
@@ -59,6 +60,7 @@ services:
       volumes:
         - "pg_data:/var/lib/postgresql/data"
         - "pg_logs:${DIR_PG_LOG}"
+        - "locks:/locks"
       logging:
         driver: json-file
         options:
@@ -89,6 +91,8 @@ volumes:
   redis_data:
     driver: local
   dot_caddy:
+    driver: local
+  locks:
     driver: local
 networks:
   travel:
