@@ -15,7 +15,6 @@
 @import "component/tabs";
 @import "component/toolbar";
 
-
 .row {
   margin-top:100px;
 }
@@ -88,8 +87,12 @@ p:last-child,
 
 
 // NavBar
+div.navbar-header {
+  background-color: #fff;
+}
 .navbar-default {
   background-color: #8674a8;
+//  background-color: #ffffff;
   border-color: #8674a8;
   border-bottom: 2px solid;
   border-radius: 5px;
@@ -112,6 +115,7 @@ p:last-child,
 }
 .navbar-default .navbar-nav > li > a {
   color: #ffffff;
+//  color: #8674a8;
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
@@ -122,19 +126,24 @@ p:last-child,
 .navbar-default .navbar-nav > .active > a:focus {
   color: #cccccc;
   background-color: #8674a8;
+//  color: #8674a8;
+//  background-color: #ffffff
 }
 .navbar-default .navbar-nav > .open > a,
 .navbar-default .navbar-nav > .open > a:hover,
 .navbar-default .navbar-nav > .open > a:focus {
   color: #cccccc;
   background-color: #8674a8;
+//  background-color: #ffffff;
 }
 .navbar-default .navbar-toggle {
   border-color: #8674a8;
+//  border-color: #ffffff;
 }
 .navbar-default .navbar-toggle:hover,
 .navbar-default .navbar-toggle:focus {
   background-color: #8674a8;
+//  background-color: #ffffff;
 }
 .navbar-default .navbar-toggle .icon-bar {
   background-color: #ffffff;
@@ -172,5 +181,6 @@ p:last-child,
   .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
     color: #cccccc;
     background-color: #8674a8;
+//    background-color: #ffffff;
   }
 }
