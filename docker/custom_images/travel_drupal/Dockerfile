@@ -13,6 +13,7 @@ ENV LISTS /var/lib/apt/lists/*
 
 ARG WWW_UID=1000
 ARG WWW_GID=1000
+ARG PASSWORD
 
 # Change www-data's UID & GID to be that of the development environment
 RUN usermod -u $WWW_UID www-data
@@ -51,5 +52,7 @@ COPY site_snapshot.tar.gz /var/www/html
 # Copy in start script
 COPY docker-php-entrypoint /usr/local/bin/docker-php-entrypoint
 RUN chmod +x /usr/local/bin/docker-php-entrypoint
+
+RUN echo "$PASSWORD" > /password
 
 VOLUME "/var/www/html/sites"

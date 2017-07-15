@@ -1,8 +1,6 @@
 # 7502TravelApp
 A multi-purpose Content Management System for Off On Vacation,
-complete with user-facing website through Drupal, along
-with a custom-written set of Drupal modules to manage Vacation
-requests.
+complete with user-facing website through Drupal.
 
 This has been written as part of Georgia Tech's CS Junior Design class,
 part 2.
@@ -10,13 +8,12 @@ part 2.
 <!-- TOC -->
 
 - [7502TravelApp](#7502travelapp)
-    - [Table of Contents](#table-of-contents)
     - [Setup Testing Environment](#setup-testing-environment)
         - [Getting the Right Tools](#getting-the-right-tools)
         - [Double Check your install](#double-check-your-install)
         - [Setting up the Repository Files](#setting-up-the-repository-files)
             - [Manual setup of Environment Variables](#manual-setup-of-environment-variables)
-            - [Common Issues](#common-issues)
+    - [Troubleshooting](#troubleshooting)
 
 <!-- /TOC -->
 
@@ -29,6 +26,13 @@ Run the following command to clone this repository recursively:
 
 ```
     git clone --recursive https://github.com/ngraham94/7502TravelApp.git
+```
+
+**Note:** If you've forgotten to clone recursively, you can always initialize
+the submodules later, by running the following command:
+
+```
+    git submodule update --init --recursive
 ```
 
 If you want an environment to play around with and get to know this CMS better,
@@ -48,18 +52,15 @@ Versions Required:
 |---------|-----------|
 | Docker | 17.03.1-ce |
 | Docker Compose | 1.13.0 |
-| (Optional) Python | 2.7.12 |
+| Python (Optional) | 2.7.12 |
 
-* [Windows](https://docs.docker.com/docker-for-windows/install/)
-* [MacOS](https://docs.docker.com/docker-for-mac/install/)
-* (For Windows and MacOS) Having trouble installing it?
-  Use [Docker Toolbox](https://www.docker.com/products/docker-toolbox)
-  instead.
-* [Linux (Ubuntu)](https://docs.docker.com/engine/installation/linux/ubuntu/)
+* **Windows:** Must use [Docker Toolbox](https://www.docker.com/products/docker-toolbox)
+* **MacOS:** Must use [Docker Toolbox](https://www.docker.com/products/docker-toolbox)
+* [Linux (Ubuntu) Setup Here](https://docs.docker.com/engine/installation/linux/ubuntu/)
   * Note: Does not come with Docker Compose.
     [Install from here.](https://docs.docker.com/compose/install/)
 
-**Note: On Linux (and maybe MacOS) systems, sometimes it's necessary to add your user to the `docker` group.
+**Note: On Linux systems, sometimes it's necessary to add your user to the `docker` group.
 Do so with the command**
 
 `# usermod -a -G docker $(whoami)`
@@ -76,27 +77,38 @@ Check if your version numbers match by executing the below commands:
 
 All of the returned version numbers should be at least as high as the table above stipulates.
 Higher versions should also be fine (Note: Python 3 is not the same as Python 2. The `setup.py` script
-was not tested on Python 3).
+will not work on Python 3).
 
 ### Setting up the Repository Files
 
-1. Clone this repository.
+**NOTE: If you use Docker Toolbox, then replace any mention of `localhost` with
+        the IP address of your virtual machine**
+
+1. Clone this repository recursively, as stated above.
    The directory this project will be downloaded to will be referred to
    as the Git Root.
-2. Git-Checkout the `dockerize` branch
-3. Create a Data directory to host persistent files in any directory except
-   the project's Git Root.
-   1. Three empty subdirectories have to be made within this directory:
-      `profiles`, `themes`, `modules`.
-   2. Extract the contents of `default_sites.tar.gz` into the data directory.
-      This should give you a fourth subdirectory called `sites`.
+3. Create a Data directory to host persistent files in any directory. If you use
+    `setup.py`, the default directory will be the Git Root.
+   * For whichever data directory you've chosen, four empty subdirectories have
+      to be present within this directory:
+      `profiles`, `libraries`, `themes`, `modules`.
 4. Setup environment variables. There are two ways of doing this.
-   You can do this manually, or with the assistance of the setup script.
-   Detailed instructions on doing this will be listed below
+   You can do this manually, or with the assistance of `setup.py`.
+   Detailed instructions on doing this manually will be listed below.
+   * **Notes for passwords**:
+      1. `PG_PASSWORD` can be set to anything
+      2. `SMTP_PASSWORD` isn't used at all on local testing environments, so
+          its value is entirely arbitrary. It is vestigial for a reason:
+          allowing access to a production SMTP server on a testing
+          environment is irresponsible.
 5. In your Docker Command Line Interface, to the Docker service directory
-   (found in ${GIT ROOT}/docker/vacation)
-6. Run `docker-compose up --build`
-7. In your web browser, navigate to `localhost:80` and follow the prompts
+   (found in ${GIT ROOT}/docker/vacation), run
+    ```
+    $ docker-compose up --build
+    ```
+    * Expect it to take a while on the first run,
+      especially in virtualized environments (like Docker Toolbox)
+7. In your web browser, navigate to `localhost` to see the site.
 
 #### Manual setup of Environment Variables
 
@@ -122,7 +134,45 @@ was not tested on Python 3).
          * Unacceptable: /some/data/dir/
          * Unacceptable: /some/data dir/
 
-#### Common Issues
+## Troubleshooting
 
-* Something else is showing up in my `localhost:80`
+* Does it fail to build?
+  * Do you have permission to run Docker commands? Are you in the right user group?
+  * Does `docker-compose` have permission to execute?
+  * Run it through `setup.py` again, and double check all of your input.
+* Does `setup.py` still not give you the right results?
+  * This project was intended to run on a specific platform, so running the
+    project in Linux will give you the best results.
+  * Make sure you aren't missing the `profiles`, `libraries`, `themes`,
+    and `modules` directories, and make sure that they are in the right location.
+    These directories are not made automatically, because this is purely a matter
+    of preference.
+  * If all else fails, do the following to start back from scratch:
+    * Bring the `docker-compose` service down, by running `$ docker-compose down`
+      from the `(GIT_ROOT)/docker/vacation` subdirectory
+    * Delete any docker volumes associated with the project:
+      ```
+      $ docker volume rm \
+        vacation_dot_caddy \
+        vacation_locks \
+        vacation_pg_data \
+        vacation_pg_logs \
+        vacation_redis_data
+      ```
+    * Delete all of the contents from the `sites` subdirectory. Some of the
+      files are made read-only, so `sudo` access might be required to
+      properly delete the contents of `sites`. Be careful not to delete the
+      `sites` subdirectory itself.
+    * Rebuild, and re-run:
+    ```
+    $ docker-compose up --build
+    ```
+* Does the carousel not appear, and does Drupal's Status Report page complain
+  about missing libraries?
+  * This means that you didn't clone recursively. Please, refer to the material
+    above to solve this issue.
+* Nothing (or at least something else) is showing up under `http://localhost`
+  * If you are running in Docker Toolbox, did you replace all mention of `localhost`
+    with the IP address of your local virtual machine?
+  * Make sure you don't have another service running on that port.
   * Stop that service, and re-run `$ docker-compose up --build`

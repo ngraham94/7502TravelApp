@@ -21,6 +21,10 @@ FIELDS = {
     'PG_PASSWORD': {
         'description': 'PostGres User\'s Password',
     },
+    'SMTP_PASSWORD': {
+        'description': """Don't worry about this on localhost.
+                        This is production only."""
+    },
     'DRUPAL_DB_NAME': {
         'description': 'Database Name'
     },

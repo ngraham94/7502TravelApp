@@ -1,19 +1,35 @@
 #!/bin/sh
 set -e
 
+sleep 1s;
+
 # first arg is `-f` or `--some-option`
 if [ "${1#-}" != "$1" ]; then
 	set -- apache2-foreground "$@"
 fi
 
 if [ "$1" = 'apache2-foreground' -a "$(id -u)" = '0' ]; then
-    sleep 10s
-    rm -rf /var/www/html/sites/*
-    tar xzf /var/www/html/site_snapshot.tar.gz -C /var/www/html
+    if [ ! -e "/var/www/html/sites/default/default.settings.php" ]; then
+        rm -rf /var/www/html/sites/*
+        tar xzf /var/www/html/site_snapshot.tar.gz -C /var/www/html
+        chmod 644 /var/www/html/sites/default/settings.php
+        PASSWORD=`cat /password`
+        sed -i 's@>>>>7502PASSWORDCHANGE<<<<@'"$PASSWORD"'@g' \
+            /var/www/html/sites/default/settings.php
+        chmod 444 /var/www/html/sites/default/settings.php
+
+        # Makes sure that the password is overwritten, then deleted.
+        dd if=/dev/urandom of=/password bs=1k count=1
+        rm /password
+        unset PASSWORD
+    fi
 	chown -R www-data:www-data /var/www/html/themes
     chown -R www-data:www-data /var/www/html/modules
     chown -R www-data:www-data /var/www/html/profiles
     chown -R www-data:www-data /var/www/html/sites
+    while [ -e "/locks/db.lock" ]; do
+        sleep 1s
+    done
 fi
 
 exec "$@"

@@ -68,9 +68,6 @@
       ]
     %}
     <header{{ navbar_attributes.addClass(navbar_classes) }} id="navbar" role="banner">
-      {% if not navbar_attributes.hasClass(container) %}
-        <div class="{{ container }}">
-      {% endif %}
       <div class="navbar-header">
         {{ page.navigation }}
         {# .btn-navbar is used as the toggle for collapsed navbar content #}
@@ -84,15 +81,21 @@
         {% endif %}
       </div>
 
+      {% if not navbar_attributes.hasClass(container) %}
+        <div class="{{ container }}">
+      {% endif %}
+
       {# Navigation (collapsible) #}
       {% if page.navigation_collapsible %}
         <div id="navbar-collapse" class="navbar-collapse collapse">
           {{ page.navigation_collapsible }}
         </div>
       {% endif %}
+
       {% if not navbar_attributes.hasClass(container) %}
         </div>
       {% endif %}
+
     </header>
   {% endblock %}
 {% endif %}
