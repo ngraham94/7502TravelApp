@@ -1,0 +1,7 @@
+.env
+sites
+!**/*.jpg
+!**/*.jpeg
+!**/*.png
+
+\.vscode/

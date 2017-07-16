@@ -1,0 +1,78 @@
+---
+- hosts: oov-dev
+  remote_user: aray40
+  become: yes
+  become_method: sudo
+  tasks: 
+    - include_vars: users.yml
+    - name: Create Users | Shell | Home Dirs
+      user:
+        name: '{{item.username}}'
+        shell: /bin/bash
+        createhome: yes
+        comment: '{{item.comment}}'
+        groups: 'wheel'
+        append: yes
+        generate_ssh_key: yes
+        ssh_key_bits: '2048'
+        ssh_key_comment: '{{item.comment}}'
+      with_items: '{{users}}'
+    - name: Install Docker Prereqs | yum-utils
+      yum: 
+        name: yum-utils
+        state: latest
+        update_cache: yes
+    - name: Install Docker Prereqs | device-mapper-persistent-data
+      yum: 
+        name: device-mapper-persistent-data
+        state: latest
+        update_cache: no
+    - name: Install Docker Prereqs | lvm2
+      yum: 
+        name: lvm2
+        state: latest
+        update_cache: no
+    - name: Add Docker Repository
+      yum_repository:
+        name: docker-ce
+        description: Docker Community Edition
+        baseurl: https://download.docker.com/linux/centos/7/x86_64/stable
+        gpgkey: https://download.docker.com/linux/centos/gpg
+        gpgcheck: yes
+        enabled: yes
+    - name: Install Docker CE
+      yum:
+        name: docker-ce
+        state: latest
+        update_cache: yes
+    - name: Add users to 'docker' group
+      user:
+        name: '{{item.username}}'
+        groups: 'docker'
+        append: yes
+      with_items: '{{users}}'
+    - name: Add Storage Driver 'devicemapper'
+      lineinfile: 
+        path: "/etc/docker/daemon.json"
+        line: 
+          "{{item.line}}"
+        state: present
+        create: yes
+        backup: yes
+      with_items: 
+        - {line: '{'}
+        - {line: '    "storage-driver": "devicemapper"'}
+        - {line: '}'}
+    - name: Enable Docker Service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+        masked: no
+    - name: Fetch Docker Compose from Internet | Version 1.13.0
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/1.13.0/docker-compose-{{ansible_system}}-{{ansible_machine}}"
+        dest: /usr/local/bin/docker-compose
+        mode: "u+x,g+x"
+        owner: root
+        group: docker
