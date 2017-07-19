@@ -6,6 +6,7 @@ LABEL description="Custom version of PostGreSQL that runs custom .SQL scripts"
 LABEL vendor="Georgia Institute of Technology"
 
 ARG SMTP_PASSWORD
+ARG PORTAL_PASSWORD
 
 RUN mkdir /schemas
 COPY schemas/drupal.sql /schemas/drupal.sql
@@ -14,6 +15,10 @@ COPY schemas/portaluser.sql /schemas/portaluser.sql
 COPY _start.sh /docker-entrypoint-initdb.d/_start.sh
 RUN sed -i 's@>>>>7502PASSWORDCHANGE<<<<@'"$SMTP_PASSWORD"'@g' \
         /schemas/drupal.sql
+RUN sed -i 's@>>>>7502PASSWORDCHANGE<<<<@'"$PORTAL_PASSWORD"'@g' \
+        /schemas/portaluser.sql
+RUN chown -R postgres:postgres /schemas
+RUN chmod 0777 /schemas
 RUN chmod +x /schemas/* /docker-entrypoint-initdb.d/_start.sh
 
 RUN mkdir /locks

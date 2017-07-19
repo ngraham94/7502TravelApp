@@ -2,7 +2,7 @@
 
 -- schemas
 CREATE SCHEMA IF NOT EXISTS backend;
-ALTER ROLE portaluser SET search_path TO backend,public;
+ALTER USER portaluser SET search_path TO backend,public;
 GRANT ALL ON SCHEMA backend TO portaluser;
 GRANT USAGE ON SCHEMA public TO portaluser;
 
@@ -88,7 +88,7 @@ CREATE TABLE "phone_numbers" (
 
 CREATE TABLE "addresses" (
 	"client_uuid" UUID NOT NULL,
-	"address_id" serial NOT NULL,
+	"address_id" int2 NOT NULL,
 	"data" TEXT NOT NULL,
 	CONSTRAINT addresses_pk PRIMARY KEY ("client_uuid","address_id")
 ) WITH (
@@ -99,7 +99,7 @@ CREATE TABLE "addresses" (
 
 CREATE TABLE "cards" (
 	"client_uuid" UUID NOT NULL,
-	"card_id" serial NOT NULL,
+	"card_id" int2 NOT NULL,
 	"data" TEXT NOT NULL,
 	CONSTRAINT cards_pk PRIMARY KEY ("client_uuid","card_id")
 ) WITH (
@@ -142,11 +142,12 @@ CREATE TABLE "destinations" (
 
 
 CREATE TABLE "travellers" (
-	"traveller_id" serial NOT NULL,
+	"traveller_id" int2 NOT NULL,
 	"trip_uuid" UUID NOT NULL,
 	"first_name" TEXT NOT NULL,
 	"last_name" TEXT NOT NULL,
 	"preferred_name" TEXT NOT NULL,
+	"birthday" character varying(10) NOT NULL,
 	"notes" TEXT NOT NULL,
 	CONSTRAINT travellers_pk PRIMARY KEY ("traveller_id","trip_uuid")
 ) WITH (
@@ -170,7 +171,7 @@ CREATE TABLE "client_event_log" (
 
 CREATE TABLE "surveys" (
 	"survey_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
-	"survey_type_id" serial2 NOT NULL,
+	"survey_type_id" int2 NOT NULL,
 	"trip_uuid" UUID NOT NULL,
     "external_shareable" bool NOT NULL DEFAULT FALSE,
 	"time_completed" TIMESTAMP DEFAULT LOCALTIMESTAMP,
@@ -184,9 +185,10 @@ CREATE TABLE "surveys" (
 
 CREATE TABLE "travel_preferences" (
 	"trip_uuid" UUID NOT NULL,
-	"ranking" smallint NOT NULL,
+	"preference_id" int2 NOT NULL,
+	"order" int2 NOT NULL,
 	"description" TEXT NOT NULL,
-	CONSTRAINT travel_preferences_pk PRIMARY KEY ("trip_uuid","ranking")
+	CONSTRAINT travel_preferences_pk PRIMARY KEY ("trip_uuid","preference_id")
 ) WITH (
   OIDS=FALSE
 );
@@ -194,7 +196,7 @@ CREATE TABLE "travel_preferences" (
 
 
 CREATE TABLE "survey_types" (
-	"survey_type_id" serial NOT NULL,
+	"survey_type_id" int2 NOT NULL,
 	"survey_type_name" character varying(40) NOT NULL UNIQUE,
 	"survey_type_description" character varying(128),
 	CONSTRAINT survey_types_pk PRIMARY KEY ("survey_type_id")
@@ -205,7 +207,7 @@ CREATE TABLE "survey_types" (
 
 
 CREATE TABLE "survey_fields" (
-	"survey_type_id" serial2 NOT NULL,
+	"survey_type_id" int2 NOT NULL,
 	"survey_field_key" character varying(40) NOT NULL UNIQUE,
 	"survey_field_title" character varying(40) NOT NULL,
 	"survey_field_desc" character varying(128) NOT NULL,
@@ -232,7 +234,7 @@ CREATE TABLE "survey_results" (
 
 CREATE TABLE "trip_notes" (
 	"trip_uuid" UUID NOT NULL,
-	"note_id" serial NOT NULL,
+	"note_id" int2 NOT NULL,
 	"note" TEXT NOT NULL,
 	"author" TEXT NOT NULL,
 	"client_visible" bool NOT NULL DEFAULT FALSE,
@@ -248,7 +250,7 @@ CREATE TABLE "trip_notes" (
 
 CREATE TABLE "client_notes" (
 	"client_uuid" UUID NOT NULL,
-	"note_id" serial NOT NULL,
+	"note_id" int2 NOT NULL,
 	"note" TEXT NOT NULL,
 	"author" TEXT NOT NULL,
 	"client_visible" bool NOT NULL DEFAULT FALSE,
@@ -262,6 +264,9 @@ CREATE TABLE "client_notes" (
 
 
 -- created separate for better debugging, each constraint is named
+-- tables are declared first, and then constraints are added later, 
+-- as 3NF+ makes extensive use of foreign keys, and foreign keys are
+-- best added later to avoid confusing and inconsistent table declarations
 
 ALTER TABLE "phone_numbers" ADD CONSTRAINT "phone_numbers_fk0"
     FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
@@ -309,6 +314,20 @@ ALTER TABLE "trip_notes" ADD CONSTRAINT "trip_notes_fk0"
 
 ALTER TABLE "client_notes" ADD CONSTRAINT "client_notes_fk0"
     FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+
+-- views
+CREATE VIEW employee_roles AS
+	SELECT uid, uuid, roles_target_id
+	FROM (drupal_users
+    	INNER JOIN drupal_user__roles ON
+           (drupal_users.uid = drupal_user__roles.entity_id));
+
+CREATE VIEW employee_form_details AS
+	SELECT uid, name, pass, mail, status
+	FROM drupal_users_field_data;
+
+CREATE VIEW employee_overview AS
+	SELECT * FROM employee_roles NATURAL INNER JOIN employee_form_details;
 
 -- triggers
 

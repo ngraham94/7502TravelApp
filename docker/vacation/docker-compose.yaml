@@ -53,6 +53,7 @@ services:
         context: ../custom_images/travel_db
         args:
           SMTP_PASSWORD: "${SMTP_PASSWORD}"
+          PORTAL_PASSWORD: "${PG_PASSWORD}"
       restart: always
       environment:
         POSTGRES_USER: "${PG_USER}"
