@@ -12,12 +12,12 @@ part 2.
 - **New Features**
     - Implemented Home page with photo carousel featuring popular vacation destinations.
     - Implemented website content that integrates with Drupal so the website administrator can create or modify the website in browser.
-    - Created pre-custom templates for the Homepage, About, Services, and Destinations that the website administrator can reuse.
+    - Created pre-custom templates for the Home, About, Services, and Destination pages that the website administrator can reuse.
     - 'Get Started' form now saves client information to backend database.
     - Implemented certifications photo carousel on the home page. 
     - About page is now divided into agent biographies and testimonials.
     - Destinations is now divided into 5 separate specific sub-categories.
-    - Every page features a button connected to the 'Get Started' Form
+    - Every page features a button connected to the 'Get Started' Form.
     
 - **Bug Fixes**
     - Removed border radius from navbar header.
