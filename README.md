@@ -7,15 +7,10 @@ part 2.
 
 <!-- TOC -->
 
-## Release Notes
+## Release Notes: Version 1.0.0
 
 - New Features
-    - [Setup Testing Environment](#setup-testing-environment)
-        - [Getting the Right Tools](#getting-the-right-tools)
-        - [Double Check your install](#double-check-your-install)
-        - [Setting up the Repository Files](#setting-up-the-repository-files)
-            - [Manual setup of Environment Variables](#manual-setup-of-environment-variables)
-    - [Troubleshooting](#troubleshooting)
+    - Hello, world.
     
 - Bug Fixes
 
