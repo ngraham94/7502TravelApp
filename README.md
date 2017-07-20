@@ -41,10 +41,10 @@ part 2.
 ## Installation Guide
 
 - [Prerequisites](#prerequisites)
-- Dependant Libraries
-- Download Instructions
-- Build Instructions
-- Installation of Application
+- [Dependant Libraries](#dependent-libraries)
+- [Download Instructions](#download-instructions)
+- [Build Instructions](#build-instructions)
+- [Installation of Application](#installation-of-application)
 - [Setting Up A Testing Environment](#setup-testing-environment)
     - [Getting the Right Tools](#getting-the-right-tools)
     - [Double Check your install](#double-check-your-install)
@@ -57,11 +57,24 @@ part 2.
 ### Prerequisites
 - - - -
 
-### Depdendant Libraries
+The following is needed to use the application:
+- A working computer, tablet, or mobile device.
+- An internet connection with a minimum speed of 2 megabits download per second.
+
+### Dependent Libraries
 - - - -
+
+There are dependent libraries that are incorporated into the website, but they are included in the recursive Drupal clone. The following libraries are included in this clone:
+
+- Blazy (UI Library)
+- Bootstrap (CSS Framework with SCSS Support) 
+- Slick (Photo Carousel)
+- jQuery Easing (Javascript for Photo Carousel Manipulation)
 
 ### Download Instructions
 - - - -
+
+
 
 ### Build Instructions
 - - - -
