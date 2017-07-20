@@ -11,7 +11,7 @@ part 2.
 
 - **New Features**
     - Implemented Home page with photo carousel featuring popular vacation destinations.
-    - Implemented
+    - Implemented website content that integrates with Drupal so the website administrator can create or modify the website in browser.
     
 - **Bug Fixes**
 
@@ -23,13 +23,12 @@ part 2.
 
 ## Installation Guide
 
-- [7502TravelApp](#7502travelapp)
-    - [Setup Testing Environment](#setup-testing-environment)
-        - [Getting the Right Tools](#getting-the-right-tools)
-        - [Double Check your install](#double-check-your-install)
-        - [Setting up the Repository Files](#setting-up-the-repository-files)
-            - [Manual setup of Environment Variables](#manual-setup-of-environment-variables)
-    - [Troubleshooting](#troubleshooting)
+- [Setup Testing Environment](#setup-testing-environment)
+    - [Getting the Right Tools](#getting-the-right-tools)
+    - [Double Check your install](#double-check-your-install)
+    - [Setting up the Repository Files](#setting-up-the-repository-files)
+        - [Manual setup of Environment Variables](#manual-setup-of-environment-variables)
+- [Troubleshooting](#troubleshooting)
 
 <!-- /TOC -->
 
