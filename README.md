@@ -9,12 +9,13 @@ part 2.
 
 ## Release Notes: Version 1.0.0
 
-- New Features
-    - Hello, world.
+- **New Features**
+    - Implemented Home page with photo carousel featuring popular vacation destinations.
+    - Implemented
     
-- Bug Fixes
+- **Bug Fixes**
 
-- Known Bugs
+- **Known Bugs**
 
 <!-- /TOC -->
 
