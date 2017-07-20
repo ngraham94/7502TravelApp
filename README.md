@@ -58,6 +58,7 @@ part 2.
 The following is needed to use the application:
 - A working computer, tablet, or mobile device.
 - An internet connection with a minimum speed of 2 megabits download per second.
+- A UNIX/Linux machine for hosting the website as a server.
 
 ### Dependent Libraries
 - - - -
