@@ -40,6 +40,11 @@ part 2.
 
 ## Installation Guide
 
+- Prerequisites
+- Dependant Libraries
+- Download Instructions
+- Build Instructions
+- Installation of Application
 - [Setup Testing Environment](#setup-testing-environment)
     - [Getting the Right Tools](#getting-the-right-tools)
     - [Double Check your install](#double-check-your-install)
