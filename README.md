@@ -7,6 +7,8 @@ part 2.
 
 <!-- TOC -->
 
+## Installation Guide
+
 - [7502TravelApp](#7502travelapp)
     - [Setup Testing Environment](#setup-testing-environment)
         - [Getting the Right Tools](#getting-the-right-tools)
