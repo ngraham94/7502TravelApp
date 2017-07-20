@@ -1,0 +1,8 @@
+-- user creation
+CREATE USER portaluser WITH ENCRYPTED PASSWORD '>>>>7502PASSWORDCHANGE<<<<';
+ALTER USER portaluser WITH SUPERUSER NOINHERIT
+    NOCREATEROLE NOCREATEDB LOGIN NOBYPASSRLS;
+
+-- permissions
+-- access to drupal db
+GRANT CONNECT ON DATABASE drupal TO portaluser;
