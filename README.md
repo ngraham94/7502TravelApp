@@ -7,7 +7,7 @@ part 2.
 
 <!-- TOC -->
 
-## Release Notes: Version 1.0.0
+## Release Notes: Version 1.0.1
 
 - **New Features**
     - Implemented Home page with photo carousel featuring popular vacation destinations.
@@ -42,12 +42,12 @@ part 2.
 
 - [Prerequisites](#prerequisites)
 - [Dependant Libraries](#dependent-libraries)
-- [Download Instructions](#download-instructions)
 - [Build Instructions for Test/Production Environment](#build-instructions-for-test-or-production-environment)
     - [Getting the Right Tools](#getting-the-right-tools)
     - [Double Check your install](#double-check-your-install)
     - [Setting up the Repository Files](#setting-up-the-repository-files)
         - [Manual setup of Environment Variables](#manual-setup-of-environment-variables)
+- [Run Instructions](#run-instructions)
 - [Troubleshooting](#troubleshooting)
 
 <!-- /TOC -->
@@ -69,12 +69,6 @@ There are dependent libraries that are incorporated into the website, but they a
 - Bootstrap (CSS Framework with SCSS Support) 
 - Slick (Photo Carousel)
 - jQuery Easing (Javascript for Photo Carousel Manipulation)
-
-### Download Instructions
-- - - -
-
-1. Open a web browser and navigate to https://andrewray.net/
-2. If a user is an agent or website administrator, the user can click the 'Log in' link on the top right corner of the screen in order to gain access to the backend control panel.
 
 ### Build Instructions for Test or Production Environment
 - - - -
@@ -197,6 +191,12 @@ will not work on Python 3).
          * Acceptable: /some/data/dir
          * Unacceptable: /some/data/dir/
          * Unacceptable: /some/data dir/
+         
+### Run Instructions
+- - - -
+
+1. Open a web browser and navigate to https://andrewray.net/
+2. If a user is an agent or website administrator, the user can click the 'Log in' link on the top right corner of the screen in order to gain access to the backend control panel.
 
 ### Troubleshooting
 - - - -
