@@ -72,19 +72,21 @@ def process_line(line):
     # Set value accordingly, if it is a key-value pair split by '='
     split_line = stripped.split('=')
     if split_line[0] in FIELDS:
+        key = split_line[0]
         vals = FIELDS[split_line[0]]
         ans = ""
         print('\n')
         while not ans:
-            prompt = str(key['description'])
+            prompt = str(vals['description'])
             #length_line = len(split_line)
             default_val = ""
             if len(split_line) >= 2:
                 default_val = split_line[1]
-                if vals['default']:
+                if 'default' in vals:
                     default_val = vals['default']
-                prompt += ' [default: ' + default_val + ']'
-                if vals['subdir']:
+                if default_val:
+                    prompt += ' [default: ' + default_val + ']'
+                if 'subdir' in vals:
                     prompt += \
                         '\n(Must be subdirectory of $DIR_STORAGE)'
             prompt += ': ' + split_line[0] + '='
