@@ -29,7 +29,6 @@ part 2.
     - Fixed the submenu anchor links so that they appear on all pages.
 
 - **Known Bugs**
-    - Window resize does not scale embedded YouTube videos. 
     - Mobile view is sometimes distorted in two-column layout pages when viewing agent biographies and testimonials.
     - The website administrator cannot assign an agent through the Drupal interface. 
     - There is currently no implementation for an E News Subscription pop up box.
