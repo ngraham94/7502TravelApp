@@ -43,8 +43,7 @@ part 2.
 - [Prerequisites](#prerequisites)
 - [Dependant Libraries](#dependent-libraries)
 - [Download Instructions](#download-instructions)
-- [Installation of Application](#installation-of-application)
-- [Setting Up A Testing Environment](#setup-testing-environment)
+- [Build Instructions for Test/Production Environment](#build-instructions-for-test/production-environment)
     - [Getting the Right Tools](#getting-the-right-tools)
     - [Double Check your install](#double-check-your-install)
     - [Setting up the Repository Files](#setting-up-the-repository-files)
@@ -76,11 +75,7 @@ There are dependent libraries that are incorporated into the website, but they a
 1. Open a web browser and navigate to https://andrewray.net/
 2. If a user is an agent or website administrator, the user can click the 'Log in' link on the top right corner of the screen in order to gain access to the backend control panel.
 
-### Installation of Application
-- - - -
-
-
-### Setup Testing Environment
+### Build Instructions for Test/Production Environment
 - - - -
 
 **Note: This repository depends on external, 3rd party git repositories.
