@@ -40,12 +40,12 @@ part 2.
 
 ## Installation Guide
 
-- Prerequisites
+- [Prerequisites](#prerequisites)
 - Dependant Libraries
 - Download Instructions
 - Build Instructions
 - Installation of Application
-- [Setup Testing Environment](#setup-testing-environment)
+- [Setting Up A Testing Environment](#setup-testing-environment)
     - [Getting the Right Tools](#getting-the-right-tools)
     - [Double Check your install](#double-check-your-install)
     - [Setting up the Repository Files](#setting-up-the-repository-files)
@@ -53,6 +53,22 @@ part 2.
 - [Troubleshooting](#troubleshooting)
 
 <!-- /TOC -->
+
+### Prerequisites
+- - - -
+
+### Depdendant Libraries
+- - - -
+
+### Download Instructions
+- - - -
+
+### Build Instructions
+- - - -
+
+### Installation of Application
+- - - -
+
 
 ### Setup Testing Environment
 - - - -
