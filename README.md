@@ -13,12 +13,13 @@ part 2.
     - Implemented Home page with photo carousel featuring popular vacation destinations.
     - Implemented website content that integrates with Drupal so the website administrator can create or modify the website in browser.
     - Created pre-custom templates for the Homepage, About, Services, and Destinations that the website administrator can reuse.
-    
+    - 'Get Started' form now saves client information to backend database.
     
 - **Bug Fixes**
     - Removed border radius from navbar header.
     - Moved the navbar header to its own section to create a purple ribbon.
     - Resized carousel images for certifications for consistency and organization.
+    - Added text to carousel images for popular vacation destinations.
 
 - **Known Bugs**
     - Window resize does not scale YouTube video embeds. 
