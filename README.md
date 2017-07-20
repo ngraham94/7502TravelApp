@@ -33,7 +33,7 @@ part 2.
 
 <!-- /TOC -->
 
-## Setup Testing Environment
+### Setup Testing Environment
 
 **Note: This repository depends on external, 3rd party git repositories.
   You must clone this repository recursively!**
@@ -54,7 +54,7 @@ the submodules later, by running the following command:
 If you want an environment to play around with and get to know this CMS better,
 then you must complete the steps listed below:
 
-### Getting the Right Tools
+#### Getting the Right Tools
 
 Installing the development environment requires Docker and Docker Compose
 
@@ -81,7 +81,7 @@ Do so with the command**
 
 `# usermod -a -G docker $(whoami)`
 
-### Double Check your install
+#### Double Check your install
 
 Check if your version numbers match by executing the below commands:
 
@@ -95,7 +95,7 @@ All of the returned version numbers should be at least as high as the table abov
 Higher versions should also be fine (Note: Python 3 is not the same as Python 2. The `setup.py` script
 will not work on Python 3).
 
-### Setting up the Repository Files
+#### Setting up the Repository Files
 
 **NOTE: If you use Docker Toolbox, then replace any mention of `localhost` with
         the IP address of your virtual machine**
@@ -126,7 +126,7 @@ will not work on Python 3).
       especially in virtualized environments (like Docker Toolbox)
 7. In your web browser, navigate to `localhost` to see the site.
 
-#### Manual setup of Environment Variables
+##### Manual setup of Environment Variables
 
    * All commands below are relative to the `docker/vacation` directory
    * Duplicate the `.env.template` file, and call it `.env`
@@ -150,7 +150,7 @@ will not work on Python 3).
          * Unacceptable: /some/data/dir/
          * Unacceptable: /some/data dir/
 
-## Troubleshooting
+### Troubleshooting
 
 * Does it fail to build?
   * Do you have permission to run Docker commands? Are you in the right user group?
