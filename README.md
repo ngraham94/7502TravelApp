@@ -12,10 +12,17 @@ part 2.
 - **New Features**
     - Implemented Home page with photo carousel featuring popular vacation destinations.
     - Implemented website content that integrates with Drupal so the website administrator can create or modify the website in browser.
+    - Created pre-custom templates for the Homepage, About, Services, and Destinations that the website administrator can reuse.
+    
     
 - **Bug Fixes**
+    - Removed border radius from navbar header.
+    - Moved the navbar header to its own section to create a purple ribbon.
+    - Resized carousel images for certifications for consistency and organization.
 
 - **Known Bugs**
+    - Window resize does not scale YouTube video embeds. 
+    - Mobile view is sometimes distorted in two-column layout pages when viewing agent biographies and testimonials.
 
 <!-- /TOC -->
 
@@ -55,7 +62,7 @@ If you want an environment to play around with and get to know this CMS better,
 then you must complete the steps listed below:
 
 #### Getting the Right Tools
-- - - -
+---------------
 
 Installing the development environment requires Docker and Docker Compose
 
@@ -83,7 +90,7 @@ Do so with the command**
 `# usermod -a -G docker $(whoami)`
 
 #### Double Check your install
-- - - -
+---------------
 
 Check if your version numbers match by executing the below commands:
 
@@ -98,7 +105,7 @@ Higher versions should also be fine (Note: Python 3 is not the same as Python 2.
 will not work on Python 3).
 
 #### Setting up the Repository Files
-- - - -
+---------------
 
 **NOTE: If you use Docker Toolbox, then replace any mention of `localhost` with
         the IP address of your virtual machine**
@@ -130,7 +137,7 @@ will not work on Python 3).
 7. In your web browser, navigate to `localhost` to see the site.
 
 ##### Manual setup of Environment Variables
-- - - -
+---------------
 
    * All commands below are relative to the `docker/vacation` directory
    * Duplicate the `.env.template` file, and call it `.env`
