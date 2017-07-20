@@ -1,4 +1,4 @@
-# 7502TravelApp
+# Off On Vacation Delivery Documentation
 A multi-purpose Content Management System for Off On Vacation,
 complete with user-facing website through Drupal.
 
