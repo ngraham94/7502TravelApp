@@ -14,16 +14,26 @@ part 2.
     - Implemented website content that integrates with Drupal so the website administrator can create or modify the website in browser.
     - Created pre-custom templates for the Homepage, About, Services, and Destinations that the website administrator can reuse.
     - 'Get Started' form now saves client information to backend database.
+    - Implemented certifications photo carousel on the home page. 
+    - About page is now divided into agent biographies and testimonials.
+    - Destinations is now divided into 5 separate specific sub-categories.
+    - Every page features a button connected to the 'Get Started' Form
     
 - **Bug Fixes**
     - Removed border radius from navbar header.
     - Moved the navbar header to its own section to create a purple ribbon.
     - Resized carousel images for certifications for consistency and organization.
     - Added text to carousel images for popular vacation destinations.
+    - Added original logo to the center of the header navbar.
+    - Added favicon for website.
+    - Fixed the submenu anchor links so that they appear on all pages.
 
 - **Known Bugs**
-    - Window resize does not scale YouTube video embeds. 
+    - Window resize does not scale embedded YouTube videos. 
     - Mobile view is sometimes distorted in two-column layout pages when viewing agent biographies and testimonials.
+    - The website administrator cannot assign an agent through the Drupal interface. 
+    - There is currently no implementation for an E News Subscription pop up box.
+    
 
 <!-- /TOC -->
 
