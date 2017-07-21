@@ -323,11 +323,12 @@ CREATE VIEW employee_roles AS
            (drupal_users.uid = drupal_user__roles.entity_id));
 
 CREATE VIEW employee_form_details AS
-	SELECT uid, name, pass, mail, status
+	SELECT uid, name, pass AS password, mail AS email, status
 	FROM drupal_users_field_data;
-
-CREATE VIEW employee_overview AS
-	SELECT * FROM employee_roles NATURAL INNER JOIN employee_form_details;
+	
+CREATE VIEW employees AS
+    SELECT name, password, email, uuid, roles_target_id AS role, status
+    FROM employee_roles NATURAL INNER JOIN employee_form_details;
 
 -- triggers
 
