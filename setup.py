@@ -63,8 +63,36 @@ FIELDS = {
         'default': str(os.getegid())
     }
 }
+"""A list of properties for each key that can be found in .env.template"""
 
 def process_line(line):
+    """Prompt user to fill a KEY=VALUE pair if the argument has one
+    
+    If the argument is either empty, whitespace, or a comment starting 
+    with '#', then the argument is returned unmutated.
+    
+    If the argument is a KEY=VALUE pair, where KEY is found in `FIELDS`,
+    then VALUE will be filled in, either by a default value specified
+    either in `FIELDS` or `line`, or a user-supplied value. The order
+    of precedence for VALUE is as follows:
+    
+        1. User-Supplied Value
+        2. Default value found in `FIELDS`
+        3. Default value found in `line`
+        
+    VALUE cannot be empty, and nor can there be a space on either side
+    of the `=` sign.
+    
+    After VALUE has been assigned, the modified KEY=VALUE pair is returned
+    as a string.
+    
+    Args:
+        line (str): A single line from .env.template
+    
+    Returns:
+        str: If `line` is a KEY=VALUE pair, then VALUE will be filled in 
+        accordingly. Otherwise, the original string.
+    """
     # Check if line is valid. If not, return it.
     stripped = line.strip()
     if not len(stripped) or stripped[0] is "#":
@@ -98,44 +126,6 @@ def process_line(line):
                 ans = ans[:-1]
         return "" + key + "=" + ans + '\n'
     return line
-
-"""
-# DEPRECATED - didnt remove old code yet just incase the new code is erroneous
-
-def process_line(line):
-    # Check if line is valid. If not, return it.
-    stripped = line.strip()
-    if not len(stripped) or stripped[0] is "#":
-        return line
-    # Set value accordingly, if it is a key-value pair split by '='
-    split_line = stripped.split('=')
-    for key, val in FIELDS.items():
-        if key == split_line[0]:
-            ans = ""
-            print('\n')
-            while not ans:
-                prompt = str(val['description'])
-                length_line = len(split_line)
-                if len(split_line) >= 2 and split_line[1]:
-                    default_val = split_line[1]
-                    if 'default' in val and val['default']:
-                        default_val = str(val['default'])
-                    prompt += ' [default: ' + default_val + ']'
-                    if 'subdir' in val and val['subdir']:
-                        prompt += \
-                            '\n(Must be subdirectory of $DIR_STORAGE)'
-                prompt += ': ' + key + '='
-                ans = str(raw_input(prompt))
-                ans = ans if ans else default_val
-            ans = ans.strip()
-            if 'fscheck' in val and val['fscheck']:
-                while ans.endswith('/') or ans.endswith('\\'):
-                    ans = ans[:-1]
-            return "" + key + "=" + ans + '\n'
-    return line
-"""
-
-
 
 if __name__ == '__main__':
     with open(ENV_FILE_URL, 'w') as env:
