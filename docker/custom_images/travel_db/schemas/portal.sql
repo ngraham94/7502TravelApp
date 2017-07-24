@@ -40,12 +40,12 @@ BEGIN
         AND (NEW.status = 'sale' OR NEW.status = 'dud'))
     THEN
         UPDATE trips SET time_close = LOCALTIMESTAMP
-            WHERE trip_uuid = OLD.trip_uuid;
+            WHERE NEW.uuid = OLD.uuid;
     ELSIF ((OLD.status = 'sale' OR OLD.status = 'dud')
             AND (NEW.status = 'active' OR NEW.status = 'inactive'))
     THEN
         UPDATE trips SET time_close = NULL
-            WHERE trip_uuid = OLD.trip_uuid;
+            WHERE NEW.uuid = OLD.uuid;
     END IF;
 
     RETURN NEW;
@@ -59,7 +59,7 @@ SECURITY DEFINER COST 1;
 CREATE TYPE trip_status AS ENUM ('dud', 'inactive', 'active', 'sale');
 
 CREATE TABLE "clients" (
-	"client_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
+	"uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
 	"salt" char(20) NOT NULL UNIQUE,
@@ -67,9 +67,8 @@ CREATE TABLE "clients" (
 	"last_name" TEXT NOT NULL,
 	"preferred_name" TEXT NOT NULL,
 	"time_creation" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
-	"flag_reset_password" bool NOT NULL DEFAULT TRUE,
     "flag_deleted" bool NOT NULL DEFAULT FALSE,
-	CONSTRAINT clients_pk PRIMARY KEY ("client_uuid")
+	CONSTRAINT clients_pk PRIMARY KEY ("uuid")
 ) WITH (
   OIDS=FALSE
 );
@@ -88,9 +87,9 @@ CREATE TABLE "phone_numbers" (
 
 CREATE TABLE "addresses" (
 	"client_uuid" UUID NOT NULL,
-	"address_id" int2 NOT NULL,
+	"address_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"data" TEXT NOT NULL,
-	CONSTRAINT addresses_pk PRIMARY KEY ("client_uuid","address_id")
+	CONSTRAINT addresses_pk PRIMARY KEY ("client_uuid","address_uuid")
 ) WITH (
   OIDS=FALSE
 );
@@ -99,9 +98,9 @@ CREATE TABLE "addresses" (
 
 CREATE TABLE "cards" (
 	"client_uuid" UUID NOT NULL,
-	"card_id" int2 NOT NULL,
+	"card_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"data" TEXT NOT NULL,
-	CONSTRAINT cards_pk PRIMARY KEY ("client_uuid","card_id")
+	CONSTRAINT cards_pk PRIMARY KEY ("client_uuid","card_uuid")
 ) WITH (
   OIDS=FALSE
 );
@@ -109,7 +108,7 @@ CREATE TABLE "cards" (
 
 
 CREATE TABLE "trips" (
-	"trip_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
+	"uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"client_uuid" UUID NOT NULL,
     "title" character varying(40) NOT NULL,
 	"assignee" TEXT,
@@ -124,7 +123,7 @@ CREATE TABLE "trips" (
 	"time_edit" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"time_close" TIMESTAMP,
     "flag_deleted" bool NOT NULL DEFAULT FALSE,
-	CONSTRAINT trips_pk PRIMARY KEY ("trip_uuid")
+	CONSTRAINT trips_pk PRIMARY KEY ("uuid")
 ) WITH (
   OIDS=FALSE
 );
@@ -142,14 +141,14 @@ CREATE TABLE "destinations" (
 
 
 CREATE TABLE "travellers" (
-	"traveller_id" int2 NOT NULL,
+	"traveller_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"trip_uuid" UUID NOT NULL,
 	"first_name" TEXT NOT NULL,
 	"last_name" TEXT NOT NULL,
 	"preferred_name" TEXT NOT NULL,
 	"birthday" character varying(10) NOT NULL,
 	"notes" TEXT NOT NULL,
-	CONSTRAINT travellers_pk PRIMARY KEY ("traveller_id","trip_uuid")
+	CONSTRAINT travellers_pk PRIMARY KEY ("traveller_uuid","trip_uuid")
 ) WITH (
   OIDS=FALSE
 );
@@ -158,11 +157,12 @@ CREATE TABLE "travellers" (
 
 CREATE TABLE "client_event_log" (
 	"client_uuid" UUID NOT NULL,
+	"event_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"time_event" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"description" TEXT NOT NULL,
 	"ip_addr" cidr NOT NULL,
 	"success" bool NOT NULL DEFAULT FALSE,
-	CONSTRAINT client_event_log_pk PRIMARY KEY ("client_uuid","time_event")
+	CONSTRAINT client_event_log_pk PRIMARY KEY ("client_uuid","event_uuid")
 ) WITH (
   OIDS=FALSE
 );
@@ -171,7 +171,7 @@ CREATE TABLE "client_event_log" (
 
 CREATE TABLE "surveys" (
 	"survey_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
-	"survey_type_id" int2 NOT NULL,
+	"survey_type_uuid" UUID NOT NULL,
 	"trip_uuid" UUID NOT NULL,
     "external_shareable" bool NOT NULL DEFAULT FALSE,
 	"time_completed" TIMESTAMP DEFAULT LOCALTIMESTAMP,
@@ -185,10 +185,10 @@ CREATE TABLE "surveys" (
 
 CREATE TABLE "travel_preferences" (
 	"trip_uuid" UUID NOT NULL,
-	"preference_id" int2 NOT NULL,
+	"preference_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"order" int2 NOT NULL,
 	"description" TEXT NOT NULL,
-	CONSTRAINT travel_preferences_pk PRIMARY KEY ("trip_uuid","preference_id")
+	CONSTRAINT travel_preferences_pk PRIMARY KEY ("trip_uuid","preference_uuid")
 ) WITH (
   OIDS=FALSE
 );
@@ -196,10 +196,10 @@ CREATE TABLE "travel_preferences" (
 
 
 CREATE TABLE "survey_types" (
-	"survey_type_id" int2 NOT NULL,
+	"survey_type_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"survey_type_name" character varying(40) NOT NULL UNIQUE,
 	"survey_type_description" character varying(128),
-	CONSTRAINT survey_types_pk PRIMARY KEY ("survey_type_id")
+	CONSTRAINT survey_types_pk PRIMARY KEY ("survey_type_uuid")
 ) WITH (
   OIDS=FALSE
 );
@@ -207,14 +207,14 @@ CREATE TABLE "survey_types" (
 
 
 CREATE TABLE "survey_fields" (
-	"survey_type_id" int2 NOT NULL,
+	"survey_type_uuid" UUID NOT NULL,
 	"survey_field_key" character varying(40) NOT NULL UNIQUE,
 	"survey_field_title" character varying(40) NOT NULL,
 	"survey_field_desc" character varying(128) NOT NULL,
 	"survey_field_type" character varying(40) NOT NULL,
 	"survey_field_reqd" bool NOT NULL DEFAULT TRUE,
 	"survey_field_enabled" bool NOT NULL DEFAULT TRUE,
-	CONSTRAINT survey_fields_pk PRIMARY KEY ("survey_type_id","survey_field_key")
+	CONSTRAINT survey_fields_pk PRIMARY KEY ("survey_type_uuid","survey_field_key")
 ) WITH (
   OIDS=FALSE
 );
@@ -234,14 +234,14 @@ CREATE TABLE "survey_results" (
 
 CREATE TABLE "trip_notes" (
 	"trip_uuid" UUID NOT NULL,
-	"note_id" int2 NOT NULL,
+	"note_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"note" TEXT NOT NULL,
 	"author" TEXT NOT NULL,
 	"client_visible" bool NOT NULL DEFAULT FALSE,
 	"time_created" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"time_edited" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"order" int2 NOT NULL DEFAULT '1',
-	CONSTRAINT trip_notes_pk PRIMARY KEY ("trip_uuid","note_id")
+	CONSTRAINT trip_notes_pk PRIMARY KEY ("trip_uuid","note_uuid")
 ) WITH (
   OIDS=FALSE
 );
@@ -250,14 +250,14 @@ CREATE TABLE "trip_notes" (
 
 CREATE TABLE "client_notes" (
 	"client_uuid" UUID NOT NULL,
-	"note_id" int2 NOT NULL,
+	"note_uuid" UUID NOT NULL DEFAULT uuid_generate_v4(),
 	"note" TEXT NOT NULL,
 	"author" TEXT NOT NULL,
 	"client_visible" bool NOT NULL DEFAULT FALSE,
 	"time_created" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"time_edited" TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 	"order" int2 NOT NULL DEFAULT '1',
-	CONSTRAINT client_notes_pk PRIMARY KEY ("client_uuid","note_id")
+	CONSTRAINT client_notes_pk PRIMARY KEY ("client_uuid","note_uuid")
 ) WITH (
   OIDS=FALSE
 );
@@ -269,38 +269,38 @@ CREATE TABLE "client_notes" (
 -- best added later to avoid confusing and inconsistent table declarations
 
 ALTER TABLE "phone_numbers" ADD CONSTRAINT "phone_numbers_fk0"
-    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("uuid");
 
 ALTER TABLE "addresses" ADD CONSTRAINT "addresses_fk0"
-    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("uuid");
 
 ALTER TABLE "cards" ADD CONSTRAINT "cards_fk0"
-    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("uuid");
 
 ALTER TABLE "trips" ADD CONSTRAINT "trips_fk0"
-    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("uuid");
 
 ALTER TABLE "destinations" ADD CONSTRAINT "destinations_fk0"
-    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("uuid");
 
 ALTER TABLE "travellers" ADD CONSTRAINT "travellers_fk0"
-    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("uuid");
 
 ALTER TABLE "client_event_log" ADD CONSTRAINT "client_event_log_fk0"
-    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("uuid");
 
 ALTER TABLE "surveys" ADD CONSTRAINT "surveys_fk0"
-    FOREIGN KEY ("survey_type_id") REFERENCES "survey_types"("survey_type_id");
+    FOREIGN KEY ("survey_type_uuid") REFERENCES "survey_types"("survey_type_uuid");
 
 ALTER TABLE "surveys" ADD CONSTRAINT "surveys_fk1"
-    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("uuid");
 
 ALTER TABLE "travel_preferences" ADD CONSTRAINT "travel_preferences_fk0"
-    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("uuid");
 
 
 ALTER TABLE "survey_fields" ADD CONSTRAINT "survey_fields_fk0"
-    FOREIGN KEY ("survey_type_id") REFERENCES "survey_types"("survey_type_id");
+    FOREIGN KEY ("survey_type_uuid") REFERENCES "survey_types"("survey_type_uuid");
 
 ALTER TABLE "survey_results" ADD CONSTRAINT "survey_results_fk0"
     FOREIGN KEY ("survey_uuid") REFERENCES "surveys"("survey_uuid");
@@ -310,10 +310,10 @@ ALTER TABLE "survey_results" ADD CONSTRAINT "survey_results_fk1"
     REFERENCES "survey_fields"("survey_field_key");
 
 ALTER TABLE "trip_notes" ADD CONSTRAINT "trip_notes_fk0"
-    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("trip_uuid");
+    FOREIGN KEY ("trip_uuid") REFERENCES "trips"("uuid");
 
 ALTER TABLE "client_notes" ADD CONSTRAINT "client_notes_fk0"
-    FOREIGN KEY ("client_uuid") REFERENCES "clients"("client_uuid");
+    FOREIGN KEY ("client_uuid") REFERENCES "clients"("uuid");
 
 -- views
 CREATE VIEW employee_roles AS
