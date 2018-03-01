@@ -2,21 +2,9 @@
 users:
   - username: aray40
     comment: "Andrew Ray"
-  - username: dansher3
-    comment: "Daniel Ansher"
-  - username: kkuzmich6
-    comment: "Alex Kuzmich"
-  - username: jmoranville3
-    comment: "Jessica Moranville"
-  - username: ccrook8
-    comment: "Carey Crook"
-  - username: ngraham7
-    comment: "Nick Graham"
-  - username: kfitzpatrick7
-    comment: "Kelly Fitzpatrick"
-  - username: oomojokun3
-    comment: "Omojokun"
   - username: mhb6
     comment: "Mary Hudachek-Buswell"
   - username: offonvacation
     comment: "OffOnVacation Administrative Account"
+  - username: diane
+    comment: "Diane Bean, owner of OffOnVacation"
