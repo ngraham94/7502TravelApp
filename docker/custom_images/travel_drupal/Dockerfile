@@ -1,4 +1,4 @@
-FROM drupal:8.3.5-apache
+FROM drupal:8.4.5-apache
 
 LABEL author="Andrew Ray"
 LABEL version="1.0.5"
